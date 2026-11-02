@@ -50,6 +50,40 @@ app.get('/events/:id', async (req, res) => {
     const event = await eventCollection.findOne({ _id: new ObjectId(id) });
     res.send(event);
 });
+// manage event 
+app.get('/events/manage/:userId', async (req, res) => {
+    const { userId } = req.params;
+    const events = await eventCollection.find({ userId }).toArray();
+    res.send(events);
+});
+// Update Event 
+app.patch('/events/:id', async (req, res) => {
+    const id = req.params.id;
+    const updatedData = req.body;
+
+    const query = { _id: new ObjectId(id) };
+    const updateDoc = {
+        $set: {
+            title: updatedData.title,
+            category: updatedData.category,
+            date: updatedData.date,
+            location: updatedData.location,
+            image: updatedData.image,
+            description: updatedData.description,
+        },
+    };
+
+        const result = await eventCollection.updateOne(query, updateDoc);
+        res.send(result);
+});
+
+// Delete Event
+app.delete('/events/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const result = await eventCollection.deleteOne(query);
+    res.send(result);
+});
 
 // join event
 app.post('/join-event', async (req, res) => {
