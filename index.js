@@ -24,7 +24,7 @@ export async function connectToMongoDB() {
 const connectedClient = await connectToMongoDB();
 const db = connectedClient.db('social-development-events');
 const eventCollection = db.collection('events');
-const volunteerCollection = db.collection('volunteers');
+const joinEventCollection = db.collection('join-events');
 
 app.get("/", (req, res) => {
   res.send("Server Checking");
@@ -59,11 +59,11 @@ app.post('/join-event', async (req, res) => {
     if (!eventId || !userId) {
         return res.status(400).send({ error: "Missing required fields (eventId or userId)" });
     }
-    const existingJoin = await volunteerCollection.findOne({ eventId, userId });
+    const existingJoin = await joinEventCollection.findOne({ eventId, userId });
     if (existingJoin) {
         return res.status(400).send({ error: "You have already joined this event" });
     }
-    const volunteerDoc = {
+    const joinEventDoc = {
         eventId,
         title: event?.title,
         category: event?.category,
@@ -77,13 +77,20 @@ app.post('/join-event', async (req, res) => {
         joinedAt: new Date()
     };
 
-    const result = await volunteerCollection.insertOne(volunteerDoc);
+    const result = await joinEventCollection.insertOne(joinEventDoc);
     res.send(result);
 });
-app.get('/volunteers/:eventId', async (req, res) => {
+// event join list
+app.get('/join-event/:eventId', async (req, res) => {
     const eventId = req.params.eventId;
-    const volunteers = await volunteerCollection.find({ eventId }).toArray();
-    res.send(volunteers);
+    const joinEvents = await joinEventCollection.find({ eventId }).toArray();
+    res.send(joinEvents);
+});
+// event join list by user
+app.get('/joined-event/:userId', async (req, res) => {
+    const userId = req.params.userId;
+    const joinEvents = await joinEventCollection.find({ userId }).toArray();
+    res.send(joinEvents);
 });
 
 app.listen(PORT, () => {
