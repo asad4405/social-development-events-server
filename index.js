@@ -35,6 +35,15 @@ app.post('/create-event', async (req, res) => {
     res.send(result);
 });
 
+app.get('/events', async (req, res) => {
+    const today = new Date().toISOString().split('T')[0];
+    const events = await eventCollection.find({
+        date: { $gte: today }
+    }).toArray();
+
+    res.send(events);
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
