@@ -51,7 +51,7 @@ const verifyToken = async (req, res, next) => {
 };
 
 app.get("/", (req, res) => {
-  res.send("Server Checking");
+  res.send("Server Running...");
 });
 
 app.post('/event-create', verifyToken, async (req, res) => {
@@ -64,7 +64,7 @@ app.get('/events', async (req, res) => {
     const today = new Date().toISOString().split('T')[0];
     const events = await eventCollection.find({
         date: { $gte: today }
-    }).toArray();
+    }).sort({ date: 1 }).toArray();
 
     res.send(events);
 });
@@ -75,13 +75,13 @@ app.get('/events/:id', async (req, res) => {
     res.send(event);
 });
 // manage event 
-app.get('/events/manage/:userId', async (req, res) => {
+app.get('/events/manage/:userId', verifyToken,async (req, res) => {
     const { userId } = req.params;
-    const events = await eventCollection.find({ userId }).toArray();
+    const events = await eventCollection.find({ userId }).sort({ date: 1 }).toArray();
     res.send(events);
 });
 // Update Event 
-app.patch('/events/:id', async (req, res) => {
+app.patch('/events/:id', verifyToken, async (req, res) => {
     const id = req.params.id;
     const updatedData = req.body;
 
@@ -102,7 +102,7 @@ app.patch('/events/:id', async (req, res) => {
 });
 
 // Delete Event
-app.delete('/events/:id', async (req, res) => {
+app.delete('/events/:id', verifyToken, async (req, res) => {
     const id = req.params.id;
     const query = { _id: new ObjectId(id) };
     const result = await eventCollection.deleteOne(query);
@@ -110,7 +110,7 @@ app.delete('/events/:id', async (req, res) => {
 });
 
 // join event
-app.post('/join-event', async (req, res) => {
+app.post('/join-event', verifyToken, async (req, res) => {
     const { event, userId, userName, userEmail } = req.body;
     const eventId = event?._id ;
 
@@ -145,9 +145,9 @@ app.get('/join-event/:eventId', async (req, res) => {
     res.send(joinEvents);
 });
 // event join list by user
-app.get('/joined-event/:userId', async (req, res) => {
+app.get('/joined-event/:userId', verifyToken, async (req, res) => {
     const userId = req.params.userId;
-    const joinEvents = await joinEventCollection.find({ userId }).toArray();
+    const joinEvents = await joinEventCollection.find({ userId }).sort({ date: 1 }).toArray();
     res.send(joinEvents);
 });
 
