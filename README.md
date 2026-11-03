@@ -1,24 +1,25 @@
 # 🌍 UnityPulse - Social Development Events (Server)
 
-Welcome to the backend server repository for **UnityPulse** — a platform dedicated to organizing, managing, and participating in social development and community drives. This server handles database operations, secure user authentication verification, and API management using **Node.js**, **Express.js**, and **MongoDB**.
+Welcome to the backend server repository for **UnityPulse** — a platform dedicated to organizing, managing, and participating in social development and community drives. This server handles database operations, secure user authentication verification via JWKS, and API management using **Node.js**, **Express.js**, and **MongoDB**.
 
 ---
 
 ## 🔗 Project Links
 
-- **Live Server Base URL:** [Your Live Server Link Here]
-- **Frontend Live Site:** [Your Live Client Link Here]
-- **Client Repository:** [Your Frontend GitHub Repository Link Here]
+- **Live Server Base URL:** [https://social-unitypulse-server.vercel.app](https://social-unitypulse-server.vercel.app)
+- **Frontend Live Site:** [https://social-unitypulse.vercel.app](https://social-unitypulse.vercel.app)
+- **Client Repository:** [https://github.com/asad4405/social-development-events-client](https://github.com/asad4405/social-development-events-client)
 
 ---
 
 ## ✨ Features & Functionalities
 
-- **🔐 Secure Token Verification:** Custom middleware (`verifyToken`) utilizing `jose` to verify JWT tokens against Better Auth's JWKS endpoint.
+- **🔐 Dynamic JWKS Verification:** Custom middleware (`verifyToken`) utilizing `jose` to verify JWT tokens against Better Auth's dynamic JWKS endpoint (`${process.env.CLIENT_URL}/api/auth/jwks`).
 - **📅 Event CRUD Operations:** Full capabilities to Create, Read, Update, and Delete community events.
-- **🙋 Dynamic Event Joining System:** Allows authenticated users to RSVP/join events with duplicate registration prevention.
-- **📊 User Dashboard Data:** Endpoints to fetch events created or joined by specific users.
+- **🙋 Dynamic Event Joining System:** Allows authenticated users to RSVP/join events with duplicate registration prevention logic.
+- **📊 User Dashboard Data:** Dedicated API endpoints to fetch events created or joined by specific users.
 - **⚡ Fast Database Queries:** Powered by native MongoDB Driver with optimized search and sort operations.
+- **☁️ Serverless Ready:** Fully configured for deployment on Vercel with exported Express application handlers.
 
 ---
 
@@ -61,3 +62,4 @@ Create a `.env` file in the root directory and add the following configuration:
 ```env
 PORT=8000
 MONGODB_URL=mongodb+srv://<username>:<password>@cluster.mongodb.net/?retryWrites=true&w=majority
+CLIENT_URL=[https://social-unitypulse.vercel.app](https://social-unitypulse.vercel.app)
